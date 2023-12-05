@@ -5,6 +5,7 @@ import * as React from 'react'
 import { Pressable, SafeAreaView, StyleSheet, Text, View, Image, ScrollView, Modal, TextInput } from 'react-native'
 import { auth, db } from '../config/firebase';
 import { Audio } from 'expo-av';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 function Recordings() {
@@ -158,10 +159,11 @@ function Recordings() {
     };
 
 
-    function logoutFunc() {
+    async function logoutFunc() {
         auth.signOut()
         console.log("Successfully signed out");
-        navigation.navigate("Login")
+        await AsyncStorage.removeItem("user")
+        setAuthStatus(false)
 
     }
 
@@ -170,7 +172,13 @@ function Recordings() {
         setHeading(text)
     }
 
-    // if(!savedRecording) return <View></View>
+    if (!savedRecording) {
+        return (
+            <View style={styles.main}>
+                <Text>Loading...</Text>
+            </View>
+        )
+    }
 
     return (
         <SafeAreaView style={styles.main}>

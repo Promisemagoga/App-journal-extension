@@ -9,6 +9,8 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.21.0",
+    "@react-native-async-storage/root": "github:react-native-async-storage/async-storage",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-firebase/app": "^18.3.0",
     "@react-navigation/bottom-tabs": "^6.5.8",

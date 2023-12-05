@@ -3,42 +3,53 @@ import React, { useState } from 'react'
 import { Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native'
 import { auth } from '../config/firebase'
 import { useNavigation } from '@react-navigation/native'
+import { Alert } from 'react-native'
 
 
 
 function Login() {
     const navigation = useNavigation();
-    const [email,setEmail] = useState("")
-    const [passWord,setPassWord] = useState("")
+    const [email, setEmail] = useState("")
+    const [passWord, setPassWord] = useState("")
 
-    function login(){
-        signInWithEmailAndPassword(auth,email,passWord)
-        .then(() => {
-            console.log("User Successfully logged in");
-            navigation.navigate("Home")
-
-        })
-        .catch((error) =>{
-            console.log("You don't have an account");
-            console.log(error);
-        })
-        
+    function login() {
+        signInWithEmailAndPassword(auth, email, passWord)
+            .then(() => {
+                console.log("User successfully logged in");
+                navigation.navigate("Home");
+            })
+            .catch((error) => {
+                console.log("An error occurred during login:", error);
+                if (error.code === "auth/wrong-password") {
+                    Alert.alert("Incorrect Password");
+                } else if (error.code === "auth/user-not-found") {
+                    Alert.alert("User not found");
+                } else if (error.code === "auth/invalid-email") {
+                    Alert.alert("Invalid Email");
+                } else {
+                    Alert.alert("An error occurred during login");
+                }
+            });
     }
+
 
 
 
     return (
         <SafeAreaView style={styles.main}><Text style={styles.heading}>SignIn</Text>
-        <Text>Don't have an account? <Pressable onPress={() => navigation.navigate('Register')}><Text style={styles.span}>SignUp</Text></Pressable></Text>
-        <TextInput
-            placeholder='Email Adress'
-            type="email"
-            onChangeText={(event) => setEmail(event)}
-            style={styles.loginInput}
-        />
+            <View style={{ display: "flex", flexDirection: "row" }}>
+                <Text>Don't have an account? </Text>
+                <Pressable onPress={() => navigation.navigate('Register')}><Text style={styles.span}>SignUp</Text></Pressable>
+            </View>
+            <TextInput
+                placeholder='Email Adress'
+                type="email"
+                onChangeText={(event) => setEmail(event)}
+                style={styles.loginInput}
+            />
             <TextInput
                 placeholder='Password'
-                type= "password"
+                type="password"
                 style={styles.loginInput}
                 onChangeText={(event) => setPassWord(event)}
             />
@@ -64,14 +75,14 @@ const styles = StyleSheet.create({
         width: 300,
         height: 50,
         borderRadius: 5,
-        paddingLeft:10
+        paddingLeft: 10
     },
 
     loginButton: {
         marginTop: 20,
         width: 180,
         height: 35,
-        backgroundColor: "#F7C5C2",
+        backgroundColor: "red",
         borderRadius: 10
     },
 
@@ -81,11 +92,11 @@ const styles = StyleSheet.create({
         marginTop: "auto",
         marginBottom: "auto",
     },
-    span:{
+    span: {
         color: "red"
     },
 
-    heading:{
+    heading: {
         fontSize: 38,
         marginBottom: 20
     }
